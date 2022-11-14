@@ -39,12 +39,6 @@ class PaquetesinternetController extends Controller
     public function store(Request $request)
     {
         //
-        request()->validate([
-            'velocidad' => 'required',
-            'costo' => 'required',
-            'periodo' => 'required'
-        ]);
-
         $paquete = new Paquetesinternet();
         $paquete->velocidad = $request->velocidad;
         $paquete->costo = $request->costo;

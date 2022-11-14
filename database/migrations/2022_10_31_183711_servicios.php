@@ -20,7 +20,7 @@ class Servicios extends Migration
             $table->bigInteger('fk_cliente')->unsigned();
             $table->double('latitud')->nullable();
             $table->double('longitud')->nullable();
-            $table->string('foto_fachada', 100)->nullable();
+            $table->string('foto_fachada', 300)->nullable();
             $table->timestamps();
             $table->foreign('fk_paquete')->references('clave_paquete')->on('paquetesinternet');
             $table->foreign('fk_cliente')->references('fk_clave_persona')->on('clientes');

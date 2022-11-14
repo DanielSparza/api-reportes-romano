@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\models\Comunidad;
+use App\models\Comunidad;
 
 class ComunidadController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -15,6 +15,10 @@ class ComunidadController extends Controller
     public function index()
     {
         //
+        $comunidades = Comunidad::join('ciudades', 'comunidades.fk_ciudad', '=', 'ciudades.clave_ciudad')
+            ->select('comunidades.clave_comunidad', 'comunidades.comunidad', 'comunidades.fk_ciudad', 'ciudades.ciudad')->get();
+
+        return response()->json($comunidades);
     }
 
     /**
@@ -35,7 +39,12 @@ class ComunidadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $comunidad = new Comunidad();
+        $comunidad->comunidad = $request->comunidad;
+        $comunidad->fk_ciudad = $request->fk_ciudad;
+
+        $comunidad->save();
+        //return response()->json(['message' => 'Se ha registrado la comunidad correctamente.']);
     }
 
     /**
@@ -44,9 +53,11 @@ class ComunidadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($clave_ciudad)
     {
         //
+        $comunidadesCiudad = Comunidad::where('comunidades.fk_ciudad', '=', $clave_ciudad)->get();
+        return response()->json($comunidadesCiudad);
     }
 
     /**
@@ -67,9 +78,15 @@ class ComunidadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //
+        $comunidad = Comunidad::find($request->clave_comunidad, 'clave_comunidad');
+        $comunidad->comunidad = $request->comunidad;
+        $comunidad->fk_ciudad = $request->fk_ciudad;
+
+        $comunidad->save();
+        return $comunidad;
     }
 
     /**

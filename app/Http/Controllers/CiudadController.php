@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Ciudad;
+use App\Models\Ciudad;
 
 class CiudadController extends Controller
 {
@@ -15,6 +15,8 @@ class CiudadController extends Controller
     public function index()
     {
         //
+        $ciudades = Ciudad::all();
+        return response()->json($ciudades);
     }
 
     /**
@@ -36,6 +38,10 @@ class CiudadController extends Controller
     public function store(Request $request)
     {
         //
+        $ciudad = new Ciudad();
+        $ciudad->ciudad = $request->ciudad;
+
+        $ciudad->save();
     }
 
     /**
@@ -67,9 +73,14 @@ class CiudadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //
+        $ciudad = Ciudad::find($request->clave_ciudad, 'clave_ciudad');
+        $ciudad->ciudad = $request->ciudad;
+
+        $ciudad->save();
+        return $ciudad;
     }
 
     /**
