@@ -16,9 +16,22 @@ class RolController extends Controller
     {
         //
         $roles = Rol::all()->where('rol', "!=", "Cliente");
-
-        //$roles = Rol::all();
-        /*return $paquetes;*/
         return response()->json($roles);
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+        $rol = new Rol();
+        $rol->clave_rol = $request->clave_rol;
+        $rol->rol = $request->rol;
+
+        $rol->save();
     }
 }

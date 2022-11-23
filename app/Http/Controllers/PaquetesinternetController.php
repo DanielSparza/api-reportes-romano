@@ -16,7 +16,6 @@ class PaquetesinternetController extends Controller
     {
         //
         $paquetes = Paquetesinternet::all();
-        /*return $paquetes;*/
         return response()->json($paquetes);
     }
 

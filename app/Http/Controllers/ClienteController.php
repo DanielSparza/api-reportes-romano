@@ -111,9 +111,31 @@ class ClienteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showMiCuenta($clave_cliente)
     {
         //
+        $miCuenta = Cliente::join('personas', 'clientes.fk_clave_persona', '=', 'personas.clave_persona')
+            ->join('ciudades', 'personas.fk_ciudad', '=', 'ciudades.clave_ciudad')
+            ->join('comunidades', 'clientes.fk_comunidad', '=', 'comunidades.clave_comunidad')
+            ->join('servicios', 'clientes.fk_clave_persona', '=', 'servicios.fk_cliente')
+            ->join('paquetesinternet', 'servicios.fk_paquete', '=', 'paquetesinternet.clave_paquete')
+            ->select(
+                'clientes.fk_clave_persona',
+                'personas.nombre',
+                'clientes.direccion',
+                'clientes.nexterior',
+                'clientes.colonia',
+                'comunidades.comunidad',
+                'ciudades.ciudad',
+                'clientes.estado',
+                'personas.estatus',
+                'paquetesinternet.velocidad',
+                'paquetesinternet.costo',
+                'paquetesinternet.periodo',
+                'servicios.clave_servicio'
+            )->where('clientes.fk_clave_persona', '=', $clave_cliente)->get();
+
+        return response()->json($miCuenta);
     }
 
     /**

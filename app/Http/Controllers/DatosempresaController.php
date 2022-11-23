@@ -38,6 +38,16 @@ class DatosempresaController extends Controller
     public function store(Request $request)
     {
         //
+        $empresa = new Datosempresa();
+        $empresa->nombre = $request->nombre;
+        $empresa->logo = $request->logo;
+        $empresa->imagen_fondo = $request->imagen_fondo;
+        $empresa->sobre_nosotros = $request->sobre_nosotros;
+        $empresa->direccion = $request->direccion;
+        $empresa->ciudad = $request->ciudad;
+        $empresa->telefono = $request->telefono;
+
+        $empresa->save();
     }
 
     /**

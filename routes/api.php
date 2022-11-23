@@ -21,11 +21,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //----------------------------------MÓDULO ADMINISTRADOR-----------------------------------------------
 //CIUDADES 
 Route::get('/roles', 'App\Http\Controllers\RolController@index'); //MOSTRAR ROLES
+Route::post('/roles', 'App\Http\Controllers\RolController@store'); //REGISTRAR ROLES
 
 //USUARIOS
 Route::get('/usuarios', 'App\Http\Controllers\UserController@index'); //MOSTRAR USUARIOS
 Route::post('/usuarios', 'App\Http\Controllers\UserController@store'); //GUARDAR USUARIOS
 Route::put('/actualizar-usuario/{clave_persona}', 'App\Http\Controllers\UserController@update'); //ACTUALIZAR USUARIOS
+Route::post('/usuarios-clientes', 'App\Http\Controllers\UserController@storeCliente'); //GUARDAR USUARIOS CLIENTES
+Route::get('/validar-estatus/{clave_usuario}', 'App\Http\Controllers\UserController@validarActivo'); //VALIDAR USUARIOS ACTIVOS
+Route::get('/validar-admin', 'App\Http\Controllers\UserController@validarAdmin'); //VALIDAR EXISTENCIA DE ADMIN
 
 //CLIENTES
 Route::get('/clientes', 'App\Http\Controllers\ClienteController@index'); //MOSTRAR CLIENTES
@@ -50,6 +54,7 @@ Route::put('/actualizar-paquete/{clave_paquete}', 'App\Http\Controllers\Paquetes
 
 //DATOS EMPRESA
 Route::get('/datos-empresa', 'App\Http\Controllers\DatosempresaController@index'); //MOSTRAR REGISTROS
+Route::post('/datos-empresa', 'App\Http\Controllers\DatosempresaController@store'); //GUARDAR REGISTROS
 Route::put('/actualizar-datos-cabecera/{clave_empresa}', 'App\Http\Controllers\DatosempresaController@updateCabecera'); //ACTUALIZAR REGISTROS
 Route::put('/actualizar-datos-nosotros/{clave_empresa}', 'App\Http\Controllers\DatosempresaController@updateNosotros'); //ACTUALIZAR REGISTROS
 Route::put('/actualizar-datos-contacto/{clave_empresa}', 'App\Http\Controllers\DatosempresaController@updateContacto'); //ACTUALIZAR REGISTROS
@@ -61,3 +66,16 @@ Route::put('/historial-reportes-editar/{clave_reporte}', 'App\Http\Controllers\R
 Route::put('/historial-reportes-aumentar/{clave_reporte}', 'App\Http\Controllers\ReporteController@updateVeces'); //EDITAR PROBLEMA REPORTES
 Route::get('/reportes-pendientes', 'App\Http\Controllers\ReporteController@index'); //MOSTRAR REPORTES PENDIENTES
 Route::get('/reportes-pendientes/{ciudad}/comunidad/{comunidad}', 'App\Http\Controllers\ReporteController@showPendientes'); //MOSTRAR REPORTES PENDIENTES
+Route::get('/detalle-reportes/{clave_reporte}/tecnico/{clave_tecnico}', 'App\Http\Controllers\ReporteController@showDetalle'); //MOSTRAR DETALLE REPORTES
+Route::put('/detalle-reportes-editar/{clave_reporte}', 'App\Http\Controllers\ReporteController@updateEstatus'); //CAMBIAR ESTATUS DE REPORTES
+Route::put('/finalizar-reporte/{clave_reporte}', 'App\Http\Controllers\ReporteController@updateEstatusFinalizar'); //CAMBIAR ESTATUS DE REPORTES A FINALIZADO
+Route::get('/mis-reportes/{clave_usuario}', 'App\Http\Controllers\ReporteController@misReportes'); //MOSTRAR REPORTES DE UN USUARIO
+Route::get('/mis-reportes/{clave_usuario}/estatus/{estatus}/comunidad/{fk_comunidad}/fecha/{fecha_filtro}', 'App\Http\Controllers\ReporteController@misReportesFilter'); //MOSTRAR REPORTES DE UN USUARIO
+
+//ESTADISTICAS
+Route::get('/estadisticas-comunidad/{ciudad}/fecha-inicio/{fechaInicio}/fecha-fin/{fechaFin}', 'App\Http\Controllers\ReporteController@showEstadisticasComunidad'); //MOSTRAR ESTADISTICAS
+Route::get('/estadisticas-estatus/{ciudad}/fecha-inicio/{fechaInicio}/fecha-fin/{fechaFin}', 'App\Http\Controllers\ReporteController@showEstadisticasEstatus'); //MOSTRAR ESTADISTICAS
+
+//MI CUENTA
+Route::get('/mi-cuenta/{clave_cliente}', 'App\Http\Controllers\ClienteController@showMiCuenta'); //MOSTRAR DATOS DE CLIENTE
+Route::get('/reportes-activos/{clave_cliente}', 'App\Http\Controllers\ReporteController@showActivos'); //MOSTRAR REPORTES ACTIVOS

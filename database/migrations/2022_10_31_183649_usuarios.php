@@ -19,7 +19,7 @@ class Usuarios extends Migration
             $table->string('usuario', 20)->unique();
             $table->string('email', 50)->unique();
             $table->bigInteger('fk_rol')->unsigned();
-            $table->string('contrasena', 100);
+            $table->string('password', 255);
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('fk_clave_persona')->references('clave_persona')->on('personas');

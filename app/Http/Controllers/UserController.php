@@ -36,6 +36,24 @@ class UserController extends Controller
         return response()->json($usuarios);
     }
 
+    public function validarActivo(Request $request)
+    {
+        //
+        $usuarioEstatus = Persona::select(
+            'personas.estatus'
+        )->where('personas.clave_persona', '=', $request->clave_usuario)->get();
+
+        return response()->json($usuarioEstatus);
+    }
+
+    public function validarAdmin()
+    {
+        //
+        $existeAdmin = User::where('fk_rol', '=', 1)->get();
+
+        return response()->json($existeAdmin);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -76,7 +94,20 @@ class UserController extends Controller
         $usuario->usuario = $request->usuario;
         $usuario->email = $request->email;
         $usuario->fk_rol = $request->fk_rol;
-        $usuario->contrasena = $request->contrasena;
+        $usuario->password = $request->password;
+
+        $usuario->save();
+    }
+
+    public function storeCliente(Request $request)
+    {
+        //
+        $usuario = new User();
+        $usuario->fk_clave_persona = $request->clave_persona;
+        $usuario->usuario = $request->usuario;
+        $usuario->email = $request->email;
+        $usuario->fk_rol = $request->fk_rol;
+        $usuario->password = $request->password;
 
         $usuario->save();
     }
@@ -126,10 +157,10 @@ class UserController extends Controller
         $usuario->email = $request->email;
         $usuario->fk_rol = $request->fk_rol;
 
-        $psswd = trim($request->contrasena);
+        $psswd = trim($request->password);
 
         if ($psswd != null && strlen($psswd) >= 8) {
-            $usuario->contrasena = $request->contrasena;
+            $usuario->password = $request->password;
         }
 
         $usuario->save();
