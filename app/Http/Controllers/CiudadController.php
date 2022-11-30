@@ -8,6 +8,16 @@ use App\Models\Ciudad;
 class CiudadController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['store']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -38,10 +48,17 @@ class CiudadController extends Controller
     public function store(Request $request)
     {
         //
-        $ciudad = new Ciudad();
-        $ciudad->ciudad = $request->ciudad;
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $ciudad = new Ciudad();
+            $ciudad->ciudad = $request->ciudad;
 
-        $ciudad->save();
+            $ciudad->save();
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**

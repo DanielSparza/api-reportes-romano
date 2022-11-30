@@ -8,15 +8,32 @@ use App\Models\Paquetesinternet;
 class PaquetesinternetController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $paquetes = Paquetesinternet::all();
-        return response()->json($paquetes);
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $paquetes = Paquetesinternet::all();
+            return response()->json($paquetes);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**

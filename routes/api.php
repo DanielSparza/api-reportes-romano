@@ -18,7 +18,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//----------------------------------MÓDULO ADMINISTRADOR-----------------------------------------------
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('login', 'App\Http\Controllers\AuthController@login'); //VALIDA AL USUARIO QUE QUIERE INICIAR SESIÓN Y DEVUELVE UN JWT
+    Route::post('logout', 'App\Http\Controllers\AuthController@logout'); //ELIMINA EL JWT ACTIVO CUANDO SE CIERRA LA CESIÓN
+    Route::post('refresh', 'App\Http\Controllers\AuthController@refresh'); //REFRESCA EL JWT CUANDO HA EXPIRADO
+    Route::post('usuarios-clientes', 'App\Http\Controllers\AuthController@clientRegister'); //REGISTRAR USUARIOS CLIENTES
+});
+
 //CIUDADES 
 Route::get('/roles', 'App\Http\Controllers\RolController@index'); //MOSTRAR ROLES
 Route::post('/roles', 'App\Http\Controllers\RolController@store'); //REGISTRAR ROLES
@@ -27,7 +36,6 @@ Route::post('/roles', 'App\Http\Controllers\RolController@store'); //REGISTRAR R
 Route::get('/usuarios', 'App\Http\Controllers\UserController@index'); //MOSTRAR USUARIOS
 Route::post('/usuarios', 'App\Http\Controllers\UserController@store'); //GUARDAR USUARIOS
 Route::put('/actualizar-usuario/{clave_persona}', 'App\Http\Controllers\UserController@update'); //ACTUALIZAR USUARIOS
-Route::post('/usuarios-clientes', 'App\Http\Controllers\UserController@storeCliente'); //GUARDAR USUARIOS CLIENTES
 Route::get('/validar-estatus/{clave_usuario}', 'App\Http\Controllers\UserController@validarActivo'); //VALIDAR USUARIOS ACTIVOS
 Route::get('/validar-admin', 'App\Http\Controllers\UserController@validarAdmin'); //VALIDAR EXISTENCIA DE ADMIN
 

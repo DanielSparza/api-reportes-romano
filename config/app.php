@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application ID KEY
+    |--------------------------------------------------------------------------
+    |
+    | This value idintifies the app in order to communicate with the API
+    | to be able to make some requests for initial configuration.
+    |
+    */
+
+    'app_id_key' => env('APP_ID_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
@@ -174,6 +186,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 

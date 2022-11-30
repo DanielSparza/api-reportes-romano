@@ -9,6 +9,16 @@ use App\Models\Persona;
 class UserController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api',  ['except' => ['validarAdmin', 'store']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -46,12 +56,19 @@ class UserController extends Controller
         return response()->json($usuarioEstatus);
     }
 
-    public function validarAdmin()
+    public function validarAdmin(Request $request)
     {
         //
-        $existeAdmin = User::where('fk_rol', '=', 1)->get();
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $existeAdmin = User::where('fk_rol', '=', 1)->get();
 
-        return response()->json($existeAdmin);
+            return response()->json($existeAdmin);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**
@@ -73,43 +90,37 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        $persona = new Persona();
-        $persona->nombre = $request->nombre;
-        $persona->fk_ciudad = $request->fk_ciudad;
-        $persona->telefono_movil = $request->telefono_movil;
-        $persona->estatus = $request->estatus;
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $persona = new Persona();
+            $persona->nombre = $request->nombre;
+            $persona->fk_ciudad = $request->fk_ciudad;
+            $persona->telefono_movil = $request->telefono_movil;
+            $persona->estatus = $request->estatus;
 
-        $persona->save();
+            $persona->save();
 
-        $obtener_idpersona = Persona::where('nombre', $request->nombre)
-            ->where('fk_ciudad', $request->fk_ciudad)
-            ->where('telefono_movil', $request->telefono_movil)
-            ->where('estatus', $request->estatus)
-            ->select('clave_persona')->get()->first();
+            $obtener_idpersona = Persona::where('nombre', $request->nombre)
+                ->where('fk_ciudad', $request->fk_ciudad)
+                ->where('telefono_movil', $request->telefono_movil)
+                ->where('estatus', $request->estatus)
+                ->select('clave_persona')->get()->first();
 
-        $idpersona = json_decode($obtener_idpersona);
+            $idpersona = json_decode($obtener_idpersona);
 
-        $usuario = new User();
-        $usuario->fk_clave_persona = $idpersona->clave_persona;
-        $usuario->usuario = $request->usuario;
-        $usuario->email = $request->email;
-        $usuario->fk_rol = $request->fk_rol;
-        $usuario->password = $request->password;
+            $usuario = new User();
+            $usuario->fk_clave_persona = $idpersona->clave_persona;
+            $usuario->usuario = $request->usuario;
+            $usuario->email = $request->email;
+            $usuario->fk_rol = $request->fk_rol;
+            $usuario->password = $request->password;
 
-        $usuario->save();
-    }
-
-    public function storeCliente(Request $request)
-    {
-        //
-        $usuario = new User();
-        $usuario->fk_clave_persona = $request->clave_persona;
-        $usuario->usuario = $request->usuario;
-        $usuario->email = $request->email;
-        $usuario->fk_rol = $request->fk_rol;
-        $usuario->password = $request->password;
-
-        $usuario->save();
+            $usuario->save();
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**

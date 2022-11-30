@@ -7,16 +7,33 @@ use App\Models\Datosempresa;
 
 class DatosempresaController extends Controller
 {
-     /**
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index', 'store']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $datos = Datosempresa::all();
-        return response()->json($datos);
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $datos = Datosempresa::all();
+            return response()->json($datos);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**
@@ -38,16 +55,23 @@ class DatosempresaController extends Controller
     public function store(Request $request)
     {
         //
-        $empresa = new Datosempresa();
-        $empresa->nombre = $request->nombre;
-        $empresa->logo = $request->logo;
-        $empresa->imagen_fondo = $request->imagen_fondo;
-        $empresa->sobre_nosotros = $request->sobre_nosotros;
-        $empresa->direccion = $request->direccion;
-        $empresa->ciudad = $request->ciudad;
-        $empresa->telefono = $request->telefono;
+        if ($request->bearerToken() == config('app.app_id_key')) {
+            $empresa = new Datosempresa();
+            $empresa->nombre = $request->nombre;
+            $empresa->logo = $request->logo;
+            $empresa->imagen_fondo = $request->imagen_fondo;
+            $empresa->sobre_nosotros = $request->sobre_nosotros;
+            $empresa->direccion = $request->direccion;
+            $empresa->ciudad = $request->ciudad;
+            $empresa->telefono = $request->telefono;
 
-        $empresa->save();
+            $empresa->save();
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Acceso denegado.'
+            ], 401);
+        }
     }
 
     /**
@@ -88,7 +112,7 @@ class DatosempresaController extends Controller
 
         $imagen = trim($request->imagen_fondo);
         if ($imagen != null && strlen($imagen) > 0) {
-            $cabecera->imagen_fondo = $request->imagen_fondo; 
+            $cabecera->imagen_fondo = $request->imagen_fondo;
         }
 
         $cabecera->save();

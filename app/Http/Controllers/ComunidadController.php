@@ -8,6 +8,16 @@ use App\models\Comunidad;
 class ComunidadController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -44,7 +54,6 @@ class ComunidadController extends Controller
         $comunidad->fk_ciudad = $request->fk_ciudad;
 
         $comunidad->save();
-        //return response()->json(['message' => 'Se ha registrado la comunidad correctamente.']);
     }
 
     /**
